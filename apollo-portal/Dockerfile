@@ -7,7 +7,7 @@
 FROM java:8-jre
 MAINTAINER Louis
 
-ENV VERSION 0.11.0-SNAPSHOT
+ENV VERSION 0.11.0
 
 RUN apt-get install unzip
 
