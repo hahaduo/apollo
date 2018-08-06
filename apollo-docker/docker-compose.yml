@@ -1,0 +1,53 @@
+version: '3.4'
+services:
+ configservice:
+  image: zkyd/apollo
+  environment:
+  - spring_datasource_url=jdbc:mysql://192.168.31.192:3306/ApolloConfigDB?characterEncoding=utf8
+  - spring_datasource_username=root
+  - spring_datasource_password=123456
+  - logging.file=/Users/lihongjun/logs/apollo/docker/configservice.log
+  - server.port=8080
+  ports:
+  - "8080:8080"
+  volumes:
+  - /Users/lihongjun/logs/apollo:/opt/logs
+  command: configservice.jar
+  network_mode: host
+  restart: always
+
+ adminservice:
+  image: zkyd/apollo
+  environment:
+  - spring_datasource_url=jdbc:mysql://192.168.31.192:3306/ApolloConfigDB?characterEncoding=utf8
+  - spring_datasource_username=root
+  - spring_datasource_password=123456
+  - logging.file=/Users/lihongjun/logs/apollo/docker/adminservice.log
+  - server.port=8090
+  ports:
+  - "8090:8090"
+  volumes:
+  - /Users/lihongjun/logs/apollo/docker:/opt/logs
+  command: adminservice.jar
+  network_mode: host
+  depends_on:
+   - configservice
+  restart: always
+
+ portal:
+  image: zkyd/apollo
+  environment:
+  - spring_datasource_url=jdbc:mysql://192.168.31.192:3306/ApolloPortalDB?characterEncoding=utf8
+  - spring_datasource_username=root
+  - spring_datasource_password=123456
+  - server.port=8070
+  - logging.file=/Users/lihongjun/logs/apollo/docker/portal.log
+  ports:
+  - "8070:8070"
+  volumes:
+  - /Users/lihongjun/logs/apollo/docker:/opt/logs
+  command: -Ddev_meta=http://192.168.31.192:8080 portal.jar
+  network_mode: host
+  depends_on:
+   - adminservice
+  restart: always
